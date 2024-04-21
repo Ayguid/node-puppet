@@ -4,5 +4,6 @@
     "dotenv": "^16.4.5",
     "puppeteer": "^22.6.5",
     "telegram": "^2.20.15"
-  }
+  },
+  "type": "module"
 }
