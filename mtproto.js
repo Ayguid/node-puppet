@@ -1,3 +1,4 @@
+require('dotenv').config(); // env config
 const path = require('path');
 const MTProto = require('@mtproto/core');
 const { sleep } = require('@mtproto/core/src/utils/common');
@@ -6,8 +7,8 @@ const { saveData } = require('./fileManager.js');
 class API {
   constructor() {
     this.mtproto = new MTProto({
-      api_id: '28153086',
-      api_hash: 'd7de0bca40d2573e92c236c3c5b31938',
+      api_id: Number(process.env.TELEGRAM_API_ID) || '',
+      api_hash: process.env.TELEGRAM_API_HASH || '',
       storageOptions: {
         path: path.resolve(__dirname, './data/1.json'),
       },
