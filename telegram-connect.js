@@ -9,11 +9,51 @@ import * as fs from 'fs';
 const apiId = Number(process.env.TELEGRAM_API_ID) || '';
 const apiHash = process.env.TELEGRAM_API_HASH || '';
 const stringSession = new StringSession("1AQAOMTQ5LjE1NC4xNzUuNTMBuyk8EU0y6o+lEpCJ45tVGJoafppm1FZmFQxkuH4JdGzQ2Qzz6UyMZOu7ZsCa2FxFt0l/e+UJKCO2zynZfwKdQC0GfSfC1E9PfVf0tNbA+h3E2CCHts3obAgLchnGjuFi1guARk/Q9Q6oylRrxxmOTdVCsyEdxGm1MG6+vvDIlp3NUOxrQWAZk68l+/LpJbpFqxeuJAEofsf333pUWMcGchB6nMOkxFewroozPUFZAaSXdh+XpqKj+O5vwgLnaYBUHnEz5b4l95hv0LuixCn5Rufiu7Jb/20gA3d+yqMz50KMCEWHL4bzuwU4qZs95zn1coFDhGj78YfrTZmwUeWRuZs="); // fill this later with the value from session.save()
+const client = new TelegramClient(stringSession, apiId, apiHash, {});
 
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 });
+
+
+(async () => {
+  await client.connect();
+  const messages = await client.getMessages("https://t.me/binancekillers", { limit: 100, filter: Api.InputMessagesFilterPhotos })
+  console.log(messages);
+  let emptyJson = [];
+  messages.forEach(async msg => {
+    const photo = msg.photo;
+    let message = {
+      //media: msg.media,
+      message: msg.message,
+      img: `${photo.accessHash}.jpg`
+    }
+    emptyJson.push(message);
+    const buffer = await client.downloadFile(
+      new Api.InputPhotoFileLocation({
+        id: photo.id,
+        accessHash: photo.accessHash,
+        fileReference: photo.fileReference,
+        thumbSize: "i"
+      }),
+      {
+        dcId: photo.dcId,
+        //fileSize: "m",
+      }
+    );
+    fs.writeFileSync('./chats.json', JSON.stringify(emptyJson));
+    fs.writeFileSync(`./pics/${msg.media.photo.accessHash}.jpg`, buffer);
+  })
+  // Get all the photos
+  //const photos = await client.getMessages(chat, {limit: undefined, filter:Api.InputMessagesFilterPhotos})
+
+  // Get messages by ID:
+  //const messages = await client.getMessages("https://t.me/binancekillers", {ids:1337})
+  //const message_1337 = messages[0];
+
+})()
+
 /*
 (async () => {
   console.log("Loading interactive example...");
@@ -42,7 +82,7 @@ const rl = readline.createInterface({
 */
 
 
-const client = new TelegramClient(stringSession, apiId, apiHash, {});
+
 /*
 (async function run() {
 
@@ -113,6 +153,7 @@ const client = new TelegramClient(stringSession, apiId, apiHash, {});
   console.log(result); // prints the result
 })();
 */
+/*
 (async function run() {
   await client.connect(); // This assumes you have already authenticated with .start()
 
@@ -158,4 +199,4 @@ const client = new TelegramClient(stringSession, apiId, apiHash, {});
     }
     emptyJson.push(message)
   });
-})();
+})();*/
