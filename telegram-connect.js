@@ -63,13 +63,15 @@ const rl = readline.createInterface({
       //img: `${photo.accessHash}.jpg`
     }
     chatsArray.push(message);
-    const buffer = await client.downloadMedia(msg, {});
+    const buffer = await client.downloadMedia(msg, {
+      //progressCallback : console.log
+    });
     
 
     if (!fs.existsSync(userFolder)){
       await fs.mkdirSync(userFolder);
     } 
-    fs.writeFileSync(`./${userFolder}/${msg.media.photo.accessHash}.jpg`, buffer);
+    fs.writeFileSync(`./${userFolder}/${msg.id}.jpg`, buffer);
   });
   fs.writeFileSync(`./${userFolder}/chats.json`, JSON.stringify(chatsArray));
   //await client.disconnect();
