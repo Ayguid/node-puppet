@@ -1,3 +1,5 @@
+//https://pptr.dev/api
+//https://pptr.dev/guides/page-interactions
 import puppeteer from 'puppeteer';
 //const puppeteer = require ('puppeteer');
 

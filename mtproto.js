@@ -1,6 +1,6 @@
 require('dotenv').config(); // env config
 const path = require('path');
-const MTProto = require('@mtproto/core');
+const MTProto = require('@mtproto/core');//https://mtproto-core.js.org/docs/
 const { sleep } = require('@mtproto/core/src/utils/common');
 const { saveData } = require('./fileManager.js');
 

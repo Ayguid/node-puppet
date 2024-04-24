@@ -1,6 +1,8 @@
 import dotenv from 'dotenv'
-dotenv.config()
-
+dotenv.config();
+//https://core.telegram.org/methods
+//https://gram.js.org/tl/messages/GetHistory
+//https://gram.js.org/beta/classes/TelegramClient.html#downloadMedia
 import { Api, TelegramClient } from "telegram";
 import { StringSession } from "telegram/sessions/index.js";
 import readline from "readline";
@@ -16,7 +18,66 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
+/*
+(async () => {
+  console.log("Loading interactive example...");
+  const client = new TelegramClient(stringSession, apiId, apiHash, {
+    connectionRetries: 5,
+  });
+  await client.start({
+    phoneNumber: async () =>
+      new Promise((resolve) =>
+        rl.question("Please enter your number: ", resolve)
+      ),
+    password: async () =>
+      new Promise((resolve) =>
+        rl.question("Please enter your password: ", resolve)
+      ),
+    phoneCode: async () =>
+      new Promise((resolve) =>
+        rl.question("Please enter the code you received: ", resolve)
+      ),
+    onError: (err) => console.log(err),
+  });
+  console.log("You should now be connected.");
+  console.log(client.session.save()); // Save this string to avoid logging in again
+  await client.sendMessage("me", { message: "Hello!" });
+})();
+*/
 
+
+(async () => {
+  await client.connect();
+  const user = "https://t.me/binancekillers";
+  const messages = await client.getMessages(user, { limit: 100, filter: Api.InputMessagesFilterPhotos });
+  const ROOT_DB_DIR = './db';
+  const userFolder = ROOT_DB_DIR + '/' + user.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
+  let chatsArray = [];
+  console.log(messages);
+  messages.forEach(async msg => {
+    const photo = msg.photo;
+    let message = {
+      id: msg.id,
+      message: msg.message,
+      //media: msg.media,
+      //img: `${photo.accessHash}.jpg`
+    }
+    chatsArray.push(message);
+    const buffer = await client.downloadMedia(msg, {});
+    
+
+    if (!fs.existsSync(userFolder)){
+      await fs.mkdirSync(userFolder);
+    } 
+    fs.writeFileSync(`./${userFolder}/${msg.media.photo.accessHash}.jpg`, buffer);
+  });
+  fs.writeFileSync(`./${userFolder}/chats.json`, JSON.stringify(chatsArray));
+  //await client.disconnect();
+})();
+
+
+
+/*
 (async () => {
   await client.connect();
   const messages = await client.getMessages("https://t.me/binancekillers", { limit: 100, filter: Api.InputMessagesFilterPhotos })
@@ -53,33 +114,10 @@ const rl = readline.createInterface({
   //const message_1337 = messages[0];
 
 })()
-
-/*
-(async () => {
-  console.log("Loading interactive example...");
-  const client = new TelegramClient(stringSession, apiId, apiHash, {
-    connectionRetries: 5,
-  });
-  await client.start({
-    phoneNumber: async () =>
-      new Promise((resolve) =>
-        rl.question("Please enter your number: ", resolve)
-      ),
-    password: async () =>
-      new Promise((resolve) =>
-        rl.question("Please enter your password: ", resolve)
-      ),
-    phoneCode: async () =>
-      new Promise((resolve) =>
-        rl.question("Please enter the code you received: ", resolve)
-      ),
-    onError: (err) => console.log(err),
-  });
-  console.log("You should now be connected.");
-  console.log(client.session.save()); // Save this string to avoid logging in again
-  await client.sendMessage("me", { message: "Hello!" });
-})();
 */
+
+
+
 
 
 
